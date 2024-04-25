@@ -1,5 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EMPTY, catchError, debounceTime, distinctUntilChanged, filter, map, switchMap, tap, throwError } from 'rxjs';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -24,12 +24,19 @@ const PAUSA = 300;
   templateUrl: './lista-livros.component.html',
   styleUrl: './lista-livros.component.css'
 })
-export class ListaLivrosComponent {
+export class ListaLivrosComponent implements AfterViewInit {
   campoBusca = new FormControl();
   mensagemErro = ''
   livrosResultado!: LivrosResultado;
+  @ViewChild("campoBuscaElement") campoBuscaElement!: ElementRef;
 
   constructor(private service: LivroService) { }
+
+
+  // função que é chamada após a view ser inicializada e que da o foco no campo de busca
+  ngAfterViewInit() {
+    this.campoBuscaElement.nativeElement.focus();
+  }
 
   livrosEncontrados$ = this.campoBusca.valueChanges.pipe(
     debounceTime(PAUSA),
